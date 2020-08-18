@@ -1,5 +1,32 @@
 <template>
     <div class="map" style="height: 600px; width: 100%">
+      <v-dialog
+        v-model="overlay"
+        max-width="600"
+      >
+        <v-card>
+          <v-card-title class="headline">{{ incident.description.type }} - {{ incident.description.subtype }}</v-card-title>
+
+          <v-card-text>
+            Full Description: 
+             <v-textarea
+              outlined
+              :value="incidentJSON"
+            ></v-textarea>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="overlay = false"
+            >
+              close
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <l-map
         ref="map"
         style="height: 100%; width: 100%"
@@ -9,10 +36,12 @@
         @update:center="centerUpdated"
         @update:bounds="boundsUpdated"
         @ready="setMap"
+        v-show="!overlay"
       >
         <l-tile-layer :url="url"></l-tile-layer>
-        <l-marker v-if="incident !== undefined" :lat-lng="incidentLatLon"></l-marker>
+        <l-marker  @click="showDetails"  v-if="incident !== undefined" :lat-lng="incidentLatLon"></l-marker>
       </l-map>
+      
     </div>
 </template>
 
@@ -27,7 +56,8 @@ export default {
       center: [38.9, -77],
       bounds: null,
       incident: undefined,
-      map: undefined
+      map: undefined,
+      overlay: false
     };
   },
   computed: {
@@ -38,16 +68,23 @@ export default {
       else {
         return null;
       }
+    },
+    incidentJSON: function () {
+      if ( this.incident !== undefined ) {
+        return JSON.stringify(this.incident.description, null, 2)
+      }
+      else {
+        return null;
+      }
     }
   },
   name: "Map",
   created: function() {
     // Make async to await api call to backend
     this.incident = IncidentService.getIncident();
+
+    // Add graceful zoom to fit
     this.center = [this.incident.address.latitude, this.incident.address.longitude];
-    if (this.map !== undefined ) {
-      console.log('here')
-    }
   },
  
   methods: {
@@ -62,6 +99,10 @@ export default {
     },
     setMap () {
       this.map = this.$refs.map.mapObject;
+    },
+    showDetails() {
+      this.overlay = true;
+      console.log("details");
     }
   }
 };
