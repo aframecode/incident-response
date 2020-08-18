@@ -7,5 +7,4 @@ RUN cd /usr/src/client && npm install && npm run build
 RUN cp -R /usr/src/client/dist/ /usr/src/server/dist/ && rm -Rf /usr/src/client
 RUN cd /usr/src/server && npm install
 EXPOSE 8080
-RUN npm install
-CMD node /usr/src/server/index.js
+CMD cd /usr/src/server/ && node index.js
