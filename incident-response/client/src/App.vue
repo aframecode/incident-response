@@ -36,6 +36,14 @@ export default {
 
   data: () => ({
     drawer: false
-  })
+  }),
+  created: function() {
+    //Gather weather data for general area
+  },
+  methods: {
+    updateWeather() {
+      // TODO: Process latLon event to update weather
+    }
+  }
 };
 </script>

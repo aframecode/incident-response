@@ -4,21 +4,23 @@ const port = 8080;
 const data = require ('./data.json');
 const path = require('path');
 
+// TODO: Use connect history api
+const history = require('connect-history-api-fallback');
 
-app.use('js', express.static(path.join(__dirname +'dist')));
+const staticContent = express.static('dist');
+// Static content
+app.use(staticContent);
+
+app.use(history({
+    index: '/dist/index.html'
+  }));
 
 // Add passport or other lib here
-app.get('/incident', (req,res) => {
+app.get('/api/v1/incident', (req,res) => {
     res.json(data);
 });
 
-// TODO: Support history mode
-app.get('*', (req,res) => {
-    res.sendFile(path.join(__dirname +'/dist/index.html'));
-});
-
-
-
+app.use(staticContent);
 app.listen(port, () => {
     // TODO Add authentication or authorization and basic logging
 })

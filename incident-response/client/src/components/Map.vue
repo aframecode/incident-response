@@ -98,7 +98,7 @@ export default {
   },
   name: "Map",
   created: async function() {
-    // Make async to await api call to backend
+    // Request incident data
     this.incident = await IncidentService.getIncident();
 
     // Add graceful zoom to fit
@@ -108,6 +108,8 @@ export default {
         this.incident.address.longitude
       ];
     }
+
+    // TODO: Send address to parent component via event (allow update weather)
   },
 
   methods: {
@@ -125,7 +127,6 @@ export default {
     },
     showDetails() {
       this.overlay = true;
-      console.log("details");
     }
   }
 };
