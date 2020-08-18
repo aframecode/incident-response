@@ -7,13 +7,48 @@
         <v-card>
           <v-card-title class="headline">{{ incident.description.type }} - {{ incident.description.subtype }}</v-card-title>
 
-          <v-card-text>
-            Full Description: 
-             <v-textarea
-              outlined
-              :value="incidentJSON"
-            ></v-textarea>
-          </v-card-text>
+          <v-tabs
+            v-model="tab"
+            background-color="deep-purple accent-4"
+            class="elevation-2"
+            dark
+            :centered="centered"
+            :grow="grow"
+            :vertical="vertical"
+            :right="right"
+            :prev-icon="prevIcon ? 'mdi-arrow-left-bold-box-outline' : undefined"
+            :next-icon="nextIcon ? 'mdi-arrow-right-bold-box-outline' : undefined"
+            :icons-and-text="icons"
+          >
+            <v-tabs-slider></v-tabs-slider>
+
+            <v-tab
+              v-for="i in tabs"
+              :key="i"
+              :href="`#${i}`"
+            >
+              {{ i }}
+            </v-tab>
+
+            <v-tab-item
+              v-for="i in tabs"
+              :key="i"
+              :value="i"
+            >
+              <v-card
+                flat
+                tile
+              >
+                <v-card-text>
+                  <v-textarea
+                      outlined
+                      :value="JSON.stringify(incident[i], null, 2)"
+                    ></v-textarea>
+                </v-card-text>
+              
+              </v-card>
+            </v-tab-item>
+          </v-tabs>
 
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -57,7 +92,9 @@ export default {
       bounds: null,
       incident: undefined,
       map: undefined,
-      overlay: false
+      overlay: false,
+      tab: null,
+      tabs: ['address', 'apparatus', 'description', 'fire_department']
     };
   },
   computed: {
@@ -69,14 +106,6 @@ export default {
         return null;
       }
     },
-    incidentJSON: function () {
-      if ( this.incident !== undefined ) {
-        return JSON.stringify(this.incident.description, null, 2)
-      }
-      else {
-        return null;
-      }
-    }
   },
   name: "Map",
   created: function() {
