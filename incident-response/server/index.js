@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 8080;
-const data = require ('./data.json');
+const data = require ('./data/'+process.env.INCIDENT);
 
 // TODO: Use connect history api
 const history = require('connect-history-api-fallback');
